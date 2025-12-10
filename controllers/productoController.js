@@ -16,13 +16,12 @@ exports.obtenerProductos = async (req, res) => {
 // Obtener productos por categoría
 exports.obtenerPorCategoria = async (req, res) => {
     try {
-        // normalizar categoría
         let categoria = req.params.categoria.trim().toLowerCase().replace(/\s+/g, "");
 
         console.log("📌 Categoria recibida:", categoria);
 
         const productos = await Producto.find({
-            categoria: { 
+            categoria: {
                 $regex: new RegExp(`^${categoria}$`, "i")
             }
         });
