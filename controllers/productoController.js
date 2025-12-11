@@ -4,7 +4,15 @@ const Producto = require("../models/producto");
 exports.obtenerProductos = async (req, res) => {
     try {
         const productos = await Producto.find();
-        res.json(productos);
+
+        // Limpiar URLs antes de enviarlas
+        const productosLimpios = productos.map(prod => ({
+            ...prod._doc,
+            imagen: prod.imagen ? prod.imagen.trim() : ""
+        }));
+
+        res.json(productosLimpios);
+
     } catch (error) {
         res.status(500).json({
             message: "Error al obtener productos",
@@ -28,7 +36,13 @@ exports.obtenerPorCategoria = async (req, res) => {
 
         console.log("📌 Productos encontrados:", productos.length);
 
-        res.json(productos);
+        // Limpiar URLs antes de enviarlas
+        const productosLimpios = productos.map(prod => ({
+            ...prod._doc,
+            imagen: prod.imagen ? prod.imagen.trim() : ""
+        }));
+
+        res.json(productosLimpios);
 
     } catch (error) {
         console.error("❌ Error en obtenerPorCategoria:", error);
@@ -42,7 +56,11 @@ exports.obtenerPorCategoria = async (req, res) => {
 // Crear producto
 exports.crearProducto = async (req, res) => {
     try {
-        const nuevoProducto = new Producto(req.body);
+        const nuevoProducto = new Producto({
+            ...req.body,
+            imagen: req.body.imagen ? req.body.imagen.trim() : ""
+        });
+
         await nuevoProducto.save();
 
         res.json({
